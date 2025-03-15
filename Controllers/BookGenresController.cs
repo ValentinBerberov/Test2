@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -27,9 +28,9 @@ namespace Test2.Web.Controllers
         }
 
         // GET: BookGenres/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int? BookID, int? GenreID)
         {
-            if (id == null)
+            if (BookID == null || GenreID == null)
             {
                 return NotFound();
             }
@@ -37,7 +38,8 @@ namespace Test2.Web.Controllers
             var bookGenre = await _context.BookGenres
                 .Include(b => b.Book)
                 .Include(b => b.Genre)
-                .FirstOrDefaultAsync(m => m.BookID == id);
+                .Where(b => b.GenreID == GenreID)
+                .FirstOrDefaultAsync(m => m.BookID == BookID);
             if (bookGenre == null)
             {
                 return NotFound();
@@ -73,14 +75,14 @@ namespace Test2.Web.Controllers
         }
 
         // GET: BookGenres/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? BookID, int? GenreID)
         {
-            if (id == null)
+            if (BookID == null || GenreID == null)
             {
                 return NotFound();
             }
 
-            var bookGenre = await _context.BookGenres.FindAsync(id);
+            var bookGenre = await _context.BookGenres.FindAsync(BookID, GenreID);
             if (bookGenre == null)
             {
                 return NotFound();
@@ -95,9 +97,9 @@ namespace Test2.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("BookID,GenreID")] BookGenre bookGenre)
+        public async Task<IActionResult> Edit(int BookID, int GenreID, [Bind("BookID,GenreID")] BookGenre bookGenre)
         {
-            if (id != bookGenre.BookID)
+            if (BookID != bookGenre.BookID || GenreID != bookGenre.GenreID)
             {
                 return NotFound();
             }
@@ -128,9 +130,9 @@ namespace Test2.Web.Controllers
         }
 
         // GET: BookGenres/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? BookID, int? GenreID)
         {
-            if (id == null)
+            if (BookID == null || GenreID == null)
             {
                 return NotFound();
             }
@@ -138,7 +140,8 @@ namespace Test2.Web.Controllers
             var bookGenre = await _context.BookGenres
                 .Include(b => b.Book)
                 .Include(b => b.Genre)
-                .FirstOrDefaultAsync(m => m.BookID == id);
+                .Where(b => b.GenreID == GenreID)
+                .FirstOrDefaultAsync(m => m.BookID == BookID);
             if (bookGenre == null)
             {
                 return NotFound();
@@ -150,9 +153,9 @@ namespace Test2.Web.Controllers
         // POST: BookGenres/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int BookID, int GenreID)
         {
-            var bookGenre = await _context.BookGenres.FindAsync(id);
+            var bookGenre = await _context.BookGenres.FindAsync(BookID, GenreID);
             if (bookGenre != null)
             {
                 _context.BookGenres.Remove(bookGenre);
