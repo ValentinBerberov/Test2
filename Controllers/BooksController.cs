@@ -48,7 +48,8 @@ namespace Test2.Web.Controllers
         // GET: Books/Create
         public IActionResult Create()
         {
-            ViewData["AuthorID"] = new SelectList(_context.Author, "ID", "ID");
+            ViewBag.Authors = new SelectList(_context.Author.Select(a => new { a.ID, FullName = a.FirstName + " " + a.LastName }), "ID", "FullName");
+            
             return View();
         }
 
